@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('type_name')->comment = "0=ถอน, 1=ฝาก, 2=ถอนและฝาก";
+            $table->integer('days')->comment = "Productนี้มีให้เช่ากี่วันบ้าง";
+            $table->double('price');
+            $table->integer('status')->comment = "0=ใช้ไม่ได้, 1=ใช้ได้";
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('products');
+    }
+};
