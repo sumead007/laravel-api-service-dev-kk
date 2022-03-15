@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Authenticatable as AuthenticableTrait;
+use Illuminate\Contracts\Auth\Authenticatable;
 
-class Customer extends Model
+class Customer extends Model implements Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use AuthenticableTrait;
 
     /**
      * The attributes that are mass assignable.
