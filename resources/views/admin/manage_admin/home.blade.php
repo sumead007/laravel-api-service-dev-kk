@@ -37,6 +37,7 @@
                             <th>No</th>
                             <th>ชื่อ</th>
                             <th>ชื่อผู้ใช้งาน</th>
+                            <th>วันที่ทำรายการ</th>
                             <th>อื่นๆ</th>
                         </tr>
                     </thead>
@@ -61,8 +62,8 @@
                         <div class="form-group">
                             <label for="name">ชื่อ</label>
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="กรุณากรอกชื่อ" required>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="กรุณากรอกชื่อ"
+                                    required>
                                 <span id="nameError" class="alert-message text-danger"></span>
                             </div>
                         </div>
@@ -103,8 +104,77 @@
         </div>
     </div>
 
-    @include('layouts.script.data_table.javascript')
     <script>
+        function editPost(pass_id) {
+            clear_ms_error()
+            var id = pass_id;
+            let _url = "/admin/manage/admin/get_post/" + id;
+            $("#text_addcus").html("แก้ไขรายเบอร์โทร");
+            $("#form_second")[0].reset();
+            $.ajax({
+                url: _url,
+                type: "get",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(res) {
+                    console.log(res);
+                    if (res) {
+                        $("#post_id").val(res.id);
+                        $("#name").val(res.name);
+                        $("#username").val(res.username);
+                        $('#post-modal').modal('show');
+                    }
+                }
+            });
+        }
+
+        function deletePost(pass_id) {
+            Swal.fire({
+                title: 'คูณแน่ใจใช่หรือไม่?',
+                text: "คุณต้องการลบข้อมูลใช่หรือไม่?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ตกลง',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = pass_id;
+                    let _url = "/admin/manage/admin/delete_post/" + id;
+                    let _token = $('meta[name="csrf-token"]').attr('content');
+
+                    $.ajax({
+                        url: _url,
+                        type: "DELETE",
+                        data: {
+                            _token: _token,
+                        },
+                        success: function(res) {
+                            Swal.fire(
+                                'สำเร็จ!',
+                                res.message,
+                                'success'
+                            )
+                            var t = $('.yajra-datatable').DataTable();
+                            t.draw();
+                        },
+                        error: function(err) {
+                            Swal.fire(
+                                'มีข้อผิดพลาด!',
+                                err.responseJSON.message,
+                                'error'
+                            )
+
+                        }
+
+                    });
+                }
+            })
+
+        }
+
         function addPost() {
             $('#post-modal').modal('show');
             $("#form_second")[0].reset();
@@ -147,6 +217,7 @@
                             )
                             var t = $('.yajra-datatable').DataTable();
                             t.draw();
+                            $('#post-modal').modal('hide');
 
                             // console.log(res);
                         },
@@ -178,29 +249,39 @@
     </script>
 
     <script type="text/javascript">
-        var table = $('.yajra-datatable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('admin.manage.admin.list') }}",
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'username',
-                    name: 'username'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: true,
-                    searchable: true
-                },
-            ]
-        });
+        window.onload = (event) => {
+
+            $(function() {
+                var table = $('.yajra-datatable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "{{ route('admin.manage.admin.list') }}",
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex'
+                        },
+                        {
+                            data: 'name',
+                            name: 'name'
+                        },
+                        {
+                            data: 'username',
+                            name: 'username'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
+                            orderable: true,
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            // orderable: true,
+                            searchable: true
+                        },
+                    ]
+                });
+            });
+        };
     </script>
 @endsection

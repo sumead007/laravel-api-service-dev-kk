@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use DataTables;
+use Carbon\Carbon;
 
 class ManageAdminController extends Controller
 {
@@ -35,7 +36,19 @@ class ManageAdminController extends Controller
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="editPost(' . $row->id . ')">แก้ไข</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm" onclick="deletePost(' . $row->id . ')">ลบ</a>';
                     return $actionBtn;
                 })
-                ->rawColumns(['action'])
+                ->addColumn('name', function ($row) {
+                    if ($row->id == auth()->guard('admin')->user()->id) {
+                        return "<p class='text-success'>$row->name (คุณ)</p>";
+                    }
+                    if ($row->id != auth()->guard('admin')->user()->id) {
+                        return "<p class='text-block'>$row->name </p>";
+                    }
+                })
+                ->addColumn('created_at', function ($row) {
+                    $data = Carbon::parse($row->created_at)->locale('th')->diffForHumans();;
+                    return $data;
+                })
+                ->rawColumns(['name', 'action'])
                 ->make(true);
         }
     }
@@ -44,10 +57,12 @@ class ManageAdminController extends Controller
     {
 
         if ($request->post_id != "") {
-            $admin = Phone::find($request->post_id);
+            $data = User::find($request->post_id);
             $request->validate(
                 [
-                    "phone" => $request->phone != $admin->phone ? "required|digits:10|unique:phones,phone" : "",
+                    "username" => $data->username != $request->username ? "required|min:6|max:12|unique:customers|unique:users" : "required|min:6|max:12|unique:customers",
+                    "name" => "required|min:3|max:20",
+                    "password" => $request->password != null ? "required|min:8|max:20|required_with:password_confirmation|same:password_confirmation" : "",
                 ],
                 [
                     "phone.required" => "กรุณากรอกช่องนี้",
@@ -57,15 +72,17 @@ class ManageAdminController extends Controller
 
                 ]
             );
-            $user = Phone::updateOrCreate(['id' => $request->post_id], [
-                "phone" =>  $request->phone,
+            $user = User::updateOrCreate(['id' => $request->post_id], [
+                "username" => $request->username,
+                "name" => $request->name,
+                "password" => $request->password != null ? bcrypt($request->password) : $data->password,
             ]);
         } else {
             //เพิ่มข้อมูลใหม่
             $request->validate(
                 [
                     "username" => "required|min:6|max:12|unique:customers|unique:users",
-                    "name" => "required|min:3|max:6",
+                    "name" => "required|min:3|max:20",
                     "password" => "required|min:8|max:20|required_with:password_confirmation|same:password_confirmation",
                 ],
                 [
@@ -77,7 +94,7 @@ class ManageAdminController extends Controller
                     //name
                     "name.required" => "กรุณากรอกช่องนี้",
                     "name.min" => "ต้องมีอย่างน้อย3ตัวอักษร",
-                    "name.max" => "ต้องมีไม่เกิน6ตัวอักษร",
+                    "name.max" => "ต้องมีไม่เกิน20ตัวอักษร",
                     //password
                     "password.required" => "กรุณากรอกช่องนี้",
                     "password.min" => "ต้องมีอย่างน้อย8ตัวอักษร",
@@ -93,5 +110,16 @@ class ManageAdminController extends Controller
             ]);
         }
         return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
+    }
+    public function get_post($id)
+    {
+        $data = User::find($id);
+        return response()->json($data);
+    }
+
+    public function delete_post($id)
+    {
+        $data = User::find($id)->delete();
+        return response()->json(['message' => "ลบข้อมูลเรียบร้อย", "code" => "200"]);
     }
 }

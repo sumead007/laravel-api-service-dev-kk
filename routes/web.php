@@ -64,5 +64,6 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/manage/admin/home', [ManageAdminController::class, 'index'])->name('admin.manage.home');
     Route::get('/manage/admin/list', [ManageAdminController::class, 'getAdmin'])->name('admin.manage.admin.list');
     Route::post('/manage/admin/store', [ManageAdminController::class, 'store'])->name('admin.manage.admin.store');
-
+    Route::get('/manage/admin/get_post/{id}', [ManageAdminController::class, 'get_post']);
+    Route::delete('/manage/admin/delete_post/{id}', [ManageAdminController::class, 'delete_post']);
 });
