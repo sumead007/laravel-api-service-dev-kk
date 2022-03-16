@@ -45,17 +45,20 @@ class LoginController extends Controller
     protected function login(Request $request)
     {
         $credential = array("username" => $request->input('username'), 'password' => $request->input('password'),);
-        if (Auth::guard('customer')->attempt($credential)) {
-            // $hashed_get_random_uinq_str = hexdec(uniqid());
-            // // dd($hashed_get_random_uinq_str);
-            // Customer::find(Auth::guard('customer')->user()->id)->update([
-            //     "token_login" => $hashed_get_random_uinq_str
-            // ]);
-            // Auth::guard('customer')->user()->token_login = $hashed_get_random_uinq_str;
-            Auth::guard('customer')->logoutOtherDevices(request('password'));
-            return redirect('/home');
+        if (@$request->input('auth') == "admin") {
+            if (Auth::guard('admin')->attempt($credential)) {
+                Auth::guard('admin')->logoutOtherDevices(request('password'));
+                return redirect('/home');
+            } else {
+                return redirect()->route('admin.login')->with('error', 'ชื่อผู้ใช้งานหรือรหัสผ่านผิด');
+            }
         } else {
-            return redirect()->route('login')->with('error', 'ชื่อผู้ใช้งานหรือรหัสผ่านผิด');
+            if (Auth::guard('customer')->attempt($credential)) {
+                Auth::guard('customer')->logoutOtherDevices(request('password'));
+                return redirect('/home');
+            } else {
+                return redirect()->route('login')->with('error', 'ชื่อผู้ใช้งานหรือรหัสผ่านผิด');
+            }
         }
     }
 
