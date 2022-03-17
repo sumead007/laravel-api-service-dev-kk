@@ -68,19 +68,19 @@
                       </a>
                   </li>
                   <li class="nav-item">
-                      <a href="pages/gallery.html" class="nav-link">
-                          <i class="nav-icon far fa-image"></i>
+                      <a href="{{ route('admin.manage.customer.home') }}" class="nav-link">
+                          <i class="nav-icon fas fa-columns"></i>
                           <p>
-                              จัดการข้อมูล Products
-                              {{-- จัดการข้อมูลแอตมิน --}}
+                              จัดการข้อมูลลูกค้า
                           </p>
                       </a>
                   </li>
                   <li class="nav-item">
-                      <a href="pages/kanban.html" class="nav-link">
-                          <i class="nav-icon fas fa-columns"></i>
+                      <a href="{{ route('admin.manage.product.home') }}" class="nav-link">
+                          <i class="nav-icon far fa-image"></i>
                           <p>
-                              จัดการข้อมูลลูกค้า
+                              จัดการข้อมูล Products
+                              {{-- จัดการข้อมูลแอตมิน --}}
                           </p>
                       </a>
                   </li>

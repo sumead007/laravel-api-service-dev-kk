@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Admin\Manage;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use Illuminate\Http\Request;
-use App\Models\User;
 use DataTables;
 use Carbon\Carbon;
 
-class ManageAdminController extends Controller
+class ManageCustomerController extends Controller
 {
-
     /**
      * Create a new controller instance.
      *
@@ -23,13 +22,13 @@ class ManageAdminController extends Controller
 
     public function index()
     {
-        return view('admin.manage_admin.home');
+        return view('admin.manage_customer.home');
     }
 
-    public function getAdmin(Request $request)
+    public function get_customer(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::latest()->get();
+            $data = Customer::latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -44,11 +43,15 @@ class ManageAdminController extends Controller
                         return "<p class='text-block'>$row->name </p>";
                     }
                 })
+                ->addColumn('code', function ($row) {
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm" onclick="detail(' . $row->id . ')">รายละเอียด</a>';
+                    return $actionBtn;
+                })
                 ->addColumn('created_at', function ($row) {
                     $data = Carbon::parse($row->created_at)->locale('th')->diffForHumans();;
                     return $data;
                 })
-                ->rawColumns(['name', 'action'])
+                ->rawColumns(['name', 'action', 'code'])
                 ->make(true);
         }
     }
@@ -57,10 +60,10 @@ class ManageAdminController extends Controller
     {
 
         if ($request->post_id != "") {
-            $data = User::find($request->post_id);
+            $data = Customer::find($request->post_id);
             $request->validate(
                 [
-                    "username" => $data->username != $request->username ? "required|min:6|max:12|unique:customers|unique:users" : "required|min:6|max:12|unique:customers",
+                    "username" => $data->username != $request->username ? "required|min:6|max:12|unique:customers|unique:users" : "required|min:6|max:12|unique:users",
                     "name" => "required|min:3|max:20",
                     "password" => $request->password != null ? "required|min:8|max:20|required_with:password_confirmation|same:password_confirmation" : "",
                 ],
@@ -72,7 +75,7 @@ class ManageAdminController extends Controller
 
                 ]
             );
-            $user = User::updateOrCreate(['id' => $request->post_id], [
+            $user = Customer::updateOrCreate(['id' => $request->post_id], [
                 "username" => $request->username,
                 "name" => $request->name,
                 "password" => $request->password != null ? bcrypt($request->password) : $data->password,
@@ -103,7 +106,7 @@ class ManageAdminController extends Controller
 
                 ]
             );
-            $user = User::updateOrCreate(['id' => $request->post_id], [
+            $user = Customer::updateOrCreate(['id' => $request->post_id], [
                 "username" => $request->username,
                 "name" => $request->name,
                 "password" => bcrypt($request->password),
@@ -111,15 +114,30 @@ class ManageAdminController extends Controller
         }
         return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
     }
+
     public function get_post($id)
     {
-        $data = User::find($id);
+        $data = Customer::find($id);
         return response()->json($data);
+    }
+
+    public function save_code(Request $request)
+    {
+        $data = Customer::find($request->code_id)->update([
+            "code" => $request->code
+        ]);
+        return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
+    }
+
+    public function get_code($id)
+    {
+        $data = Customer::find($id);
+        return response()->json(["id" => $data->id, "code" => $data->code]);
     }
 
     public function delete_post($id)
     {
-        $data = User::find($id)->delete();
+        $data = Customer::find($id)->delete();
         return response()->json(['message' => "ลบข้อมูลเรียบร้อย", "code" => "200"]);
     }
 }

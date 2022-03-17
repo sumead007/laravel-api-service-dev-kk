@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\Manage\ManageAdminController;
+use App\Http\Controllers\Admin\Manage\ManageCustomerController;
+use App\Http\Controllers\Admin\Manage\ManageProductController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,4 +68,15 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::post('/manage/admin/store', [ManageAdminController::class, 'store'])->name('admin.manage.admin.store');
     Route::get('/manage/admin/get_post/{id}', [ManageAdminController::class, 'get_post']);
     Route::delete('/manage/admin/delete_post/{id}', [ManageAdminController::class, 'delete_post']);
+    //manage_products
+    Route::get('/manage/product/home', [ManageProductController::class, 'index'])->name('admin.manage.product.home');
+    Route::get('/manage/product/list', [ManageProductController::class, 'get_product'])->name('admin.manage.product.list');
+    //manage_customers
+    Route::get('/manage/customer/home', [ManageCustomerController::class, 'index'])->name('admin.manage.customer.home');
+    Route::get('/manage/customer/list', [ManageCustomerController::class, 'get_customer'])->name('admin.manage.customer.list');
+    Route::post('/manage/customer/store', [ManageCustomerController::class, 'store'])->name('admin.manage.customer.store');
+    Route::post('/manage/customer/save_code', [ManageCustomerController::class, 'save_code'])->name('admin.manage.customer.save_code');
+    Route::get('/manage/customer/get_post/{id}', [ManageCustomerController::class, 'get_post']);
+    Route::get('/manage/customer/get_code/{id}', [ManageCustomerController::class, 'get_code']);
+    Route::delete('/manage/admin/delete_post/{id}', [ManageCustomerController::class, 'delete_post']);
 });
