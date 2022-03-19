@@ -34,7 +34,7 @@
                 <table class="table table-bordered yajra-datatable">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            {{-- <th>No</th> --}}
                             <th>ชื่อ</th>
                             <th>ชื่อผู้ใช้งาน</th>
                             <th>วันที่ทำรายการ</th>
@@ -256,10 +256,11 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('admin.manage.admin.list') }}",
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex'
-                        },
+                    columns: [
+                        // {
+                        //     data: 'DT_RowIndex',
+                        //     name: 'DT_RowIndex'
+                        // },
                         {
                             data: 'name',
                             name: 'name'

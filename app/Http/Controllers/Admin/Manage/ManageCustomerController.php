@@ -7,6 +7,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ManageCustomerController extends Controller
 {
@@ -28,30 +29,44 @@ class ManageCustomerController extends Controller
     public function get_customer(Request $request)
     {
         if ($request->ajax()) {
-            $data = Customer::latest()->get();
+            // $data = Customer::latest()->get(); ช้า
+            $data = Customer::query(); //เร็ว
+
+            // DB::statement(DB::raw('set @rownum=0'));
+            // $data = Customer::select([
+            //     DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            //     'id',
+            //     'name',
+            //     'username',
+            //     'code',
+            //     'created_at',
+            //     'updated_at'
+            // ]);
+
+
             return Datatables::of($data)
-                ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="editPost(' . $row->id . ')">แก้ไข</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm" onclick="deletePost(' . $row->id . ')">ลบ</a>';
                     return $actionBtn;
                 })
-                ->addColumn('name', function ($row) {
+                ->editColumn('name', function ($row) {
                     if ($row->username == auth()->guard('admin')->user()->username) {
                         return "<p class='text-success'>$row->name (คุณ)</p>";
                     }
                     if ($row->username != auth()->guard('admin')->user()->username) {
-                        return "<p class='text-block'>$row->name </p>";
+                        return "<p class='text-black'>$row->name</p>";
                     }
                 })
                 ->addColumn('code', function ($row) {
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm" onclick="detail(' . $row->id . ')">รายละเอียด</a>';
                     return $actionBtn;
                 })
-                ->addColumn('created_at', function ($row) {
+                ->editColumn('created_at', function ($row) {
                     $data = Carbon::parse($row->created_at)->locale('th')->diffForHumans();;
                     return $data;
                 })
                 ->rawColumns(['name', 'action', 'code'])
+                ->addIndexColumn()
                 ->make(true);
         }
     }

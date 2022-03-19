@@ -28,7 +28,8 @@ class ManageProductController extends Controller
     public function get_product(Request $request)
     {
         if ($request->ajax()) {
-            $data = Product::latest()->get();
+            // $data = Product::latest()->get(); ช้า
+            $data = Product::query(); //เร็ว
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {

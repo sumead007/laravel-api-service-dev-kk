@@ -34,7 +34,7 @@
                 <table class="table table-bordered yajra-datatable">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            {{-- <th>No</th> --}}
                             <th>ชื่อ Product</th>
                             <th>รายละเอียด</th>
                             <th>ประเภทการใช้งาน</th>
@@ -285,10 +285,11 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('admin.manage.product.list') }}",
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex'
-                        },
+                    columns: [
+                        // {
+                        //     data: 'DT_RowIndex',
+                        //     name: 'DT_RowIndex'
+                        // },
                         {
                             data: 'name',
                             name: 'name'

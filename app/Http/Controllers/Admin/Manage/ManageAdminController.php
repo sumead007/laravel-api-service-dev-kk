@@ -29,14 +29,15 @@ class ManageAdminController extends Controller
     public function getAdmin(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::latest()->get();
+            // $data = User::latest()->get();
+            $data = User::query();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="editPost(' . $row->id . ')">แก้ไข</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm" onclick="deletePost(' . $row->id . ')">ลบ</a>';
                     return $actionBtn;
                 })
-                ->addColumn('name', function ($row) {
+                ->editColumn('name', function ($row) {
                     if ($row->username == auth()->guard('admin')->user()->username) {
                         return "<p class='text-success'>$row->name (คุณ)</p>";
                     }

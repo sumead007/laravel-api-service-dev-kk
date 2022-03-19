@@ -34,7 +34,7 @@
                 <table class="table table-bordered yajra-datatable">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            {{-- <th>No</th> --}}
                             <th>ชื่อ</th>
                             <th>ชื่อผู้ใช้งาน</th>
                             <th>Code</th>
@@ -364,13 +364,15 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('admin.manage.customer.list') }}",
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex'
-                        },
+                    columns: [
+                        // {
+                        //     data: 'DT_RowIndex',
+                        //     name: 'DT_RowIndex'
+                        // },
+
                         {
                             data: 'name',
-                            name: 'name'
+                            name: 'name',
                         },
                         {
                             data: 'username',
@@ -378,18 +380,21 @@
                         },
                         {
                             data: 'code',
-                            name: 'code'
+                            name: 'code',
+                            orderable: false,
+                            searchable: false,
                         },
                         {
                             data: 'created_at',
                             name: 'created_at',
-                            orderable: true,
+                            // orderable: false,
+                            // searchable: false,
                         },
                         {
                             data: 'action',
                             name: 'action',
-                            // orderable: true,
-                            searchable: true
+                            orderable: false,
+                            searchable: false,
                         },
                     ]
                 });
