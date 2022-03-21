@@ -12,35 +12,37 @@ use Illuminate\Support\Facades\DB;
 
 class ManageProductDetailController extends Controller
 {
-    protected $x = 0;
-
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $this->x = 1234;
         $this->middleware('auth:admin');
     }
 
     public function index($id)
     {
-        // dd($id);
         $data = Product::find($id);
         return view('admin.manage_product.detail', compact('data'));
     }
 
     public function get_detail(Request $request)
     {
-        return response($this->x);
+        // return response($request->id);
 
         if ($request->ajax()) {
             // $data = Product::latest()->get(); ช้า
             // sleep(10);
-            $data = ProductDetail::where('pro_id', $this->x);
-
+            $data = ProductDetail::where('pro_id', $request->id);
+            // $bottle= tbl_bottle::select(
+            //     'name',
+            //     'type',
+            //     'location'
+            //   )->where(function($query) {
+            //     $query->where('location','=','USA')->OrWhere('location','=',' ')
+            //   });
             return Datatables::of($data)
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="editPost(' . $row->id . ')">แก้ไข</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm" onclick="deletePost(' . $row->id . ')">ลบ</a>';

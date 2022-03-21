@@ -79,7 +79,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
 
     //product_detail
     Route::get('/manage/product/detail/home/{id}', [ManageProductDetailController::class, 'index']);
-    Route::get('/manage/product/detail/list/', [ManageProductDetailController::class, 'get_detail'])->name('admin.manage.product.detail.list');
+    Route::get('/manage/product/detail/list/{id}', [ManageProductDetailController::class, 'get_detail'])->name('admin.manage.product.detail.list');
     // Route::get('/manage/product/detail/post', [ManageProductDetailController::class, 'store'])->name('admin.manage.product.detail.store');
 
     //manage_customers

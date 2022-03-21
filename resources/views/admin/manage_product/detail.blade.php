@@ -25,6 +25,8 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
+                <a href="{{ URL::previous() }}" class="edit btn btn-success">ย้อนกลับ</a>
+
                 <div align="right">
                     <a href="javascript:void(0)" class="btn btn-primary" onclick="addPost()">
                         เพิ่มข้อมูล
@@ -238,7 +240,7 @@
             var table = $('.yajra-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.manage.product.detail.list') }}",
+                ajax: "{{ route('admin.manage.product.detail.list', ['id' => $data->id]) }}",
                 columns: [
                     // {
                     //     data: 'DT_RowIndex',
