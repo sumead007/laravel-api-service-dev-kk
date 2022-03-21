@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Manage\ManageAdminController;
 use App\Http\Controllers\Admin\Manage\ManageCustomerController;
 use App\Http\Controllers\Admin\Manage\ManageProductController;
+use App\Http\Controllers\Admin\Manage\ManageProductDetailController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -71,6 +72,16 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     //manage_products
     Route::get('/manage/product/home', [ManageProductController::class, 'index'])->name('admin.manage.product.home');
     Route::get('/manage/product/list', [ManageProductController::class, 'get_product'])->name('admin.manage.product.list');
+    Route::get('/manage/admin/delete_post/{id}', [ManageProductController::class, 'get_post']);
+    Route::post('/manage/product/store', [ManageProductController::class, 'store'])->name('admin.manage.product.store');
+    Route::get('/manage/product/get_post/{id}', [ManageProductController::class, 'get_post_product']);
+    Route::delete('/manage/product/delete_post/{id}', [ManageProductController::class, 'delete_post']);
+
+    //product_detail
+    Route::get('/manage/product/detail/home/{id}', [ManageProductDetailController::class, 'index']);
+    Route::get('/manage/product/detail/list/', [ManageProductDetailController::class, 'get_detail'])->name('admin.manage.product.detail.list');
+    // Route::get('/manage/product/detail/post', [ManageProductDetailController::class, 'store'])->name('admin.manage.product.detail.store');
+
     //manage_customers
     Route::get('/manage/customer/home', [ManageCustomerController::class, 'index'])->name('admin.manage.customer.home');
     Route::get('/manage/customer/list', [ManageCustomerController::class, 'get_customer'])->name('admin.manage.customer.list');

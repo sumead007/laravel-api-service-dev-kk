@@ -5,113 +5,95 @@ namespace App\Http\Controllers\Admin\Manage;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
-class ManageProductController extends Controller
+class ManageProductDetailController extends Controller
 {
+    protected $x = 0;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $this->x = 1234;
         $this->middleware('auth:admin');
     }
 
-    public function index()
+    public function index($id)
     {
-        return view('admin.manage_product.home');
+        // dd($id);
+        $data = Product::find($id);
+        return view('admin.manage_product.detail', compact('data'));
     }
 
-    public function get_product(Request $request)
+    public function get_detail(Request $request)
     {
+        return response($this->x);
+
         if ($request->ajax()) {
             // $data = Product::latest()->get(); ช้า
-            $data = Product::query(); //เร็ว
+            // sleep(10);
+            $data = ProductDetail::where('pro_id', $this->x);
+
             return Datatables::of($data)
-                ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="editPost(' . $row->id . ')">แก้ไข</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm" onclick="deletePost(' . $row->id . ')">ลบ</a>';
                     return $actionBtn;
                 })
-                ->addColumn('type_name_new', function ($row) {
-                    if ($row->type_name == 0) {
-                        return "ถอน";
-                    }
-                    if ($row->type_name == 1) {
-                        return "ฝาก";
-                    }
-                    if ($row->type_name == 2) {
-                        return "ถอน/ฝาก";
-                    }
-                })
-                ->addColumn('status_new', function ($row) {
+                ->editColumn('status', function ($row) {
                     if ($row->status == 0) {
-                        return "<b class='text-danger'>ไม่เปิดให้ใช้</b>";
+                        return "<b class='text-danger'>ไม่รองรับ</b>";
                     }
                     if ($row->status == 1) {
-                        return "<b class='text-success'>เปิดให้ใช้</b>";
+                        return "<b class='text-success'>รองรับ</b>";
                     }
                 })
-                ->addColumn('detail', function ($row) {
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="detail(' . $row->id . ')">รายละเอียด</a> ';
-                    return $actionBtn;
-                })
-                ->addColumn('created_at', function ($row) {
-                    $data = Carbon::parse($row->created_at)->locale('th')->diffForHumans();
+                ->editColumn('created_at', function ($row) {
+                    $data = Carbon::parse($row->created_at)->locale('th')->diffForHumans();;
                     return $data;
                 })
-                ->rawColumns(['type_name_new', 'detail', 'status_new', 'created_at', 'action'])
+                ->rawColumns(['created_at', 'action', 'status'])
+                ->addIndexColumn()
                 ->make(true);
         }
-    }
-
-    public function get_post($id)
-    {
-        $data = ProductDetail::where('pro_id', $id)->get();
-        for ($i = 0; $i < count($data); $i++) {
-            $data[$i]->created_at2 = Carbon::parse($data[$i]->created_at)->locale('th')->diffForHumans();
-        }
-        return response()->json($data);
     }
 
     public function store(Request $request)
     {
 
         if ($request->post_id != "") {
-            $data = Product::find($request->post_id);
+            $data = User::find($request->post_id);
             $request->validate(
                 [
-                    "name" => $data->username != $request->username ? "required|max:12|unique:products" : "required|max:12",
-                    "type" => "required",
-                    "status" => "required",
-                    "days" => "required|numeric",
-                    "price" => "required|numeric",
+                    "username" => $data->username != $request->username ? "required|min:6|max:12|unique:customers|unique:users" : "required|min:6|max:12|unique:customers",
+                    "name" => "required|min:3|max:20",
+                    "password" => $request->password != null ? "required|min:8|max:20|required_with:password_confirmation|same:password_confirmation" : "",
                 ],
-                // [
-                //     "phone.required" => "กรุณากรอกช่องนี้",
-                //     "phone.numeric" => "กรุณากรอกช่องนี้เป็นตัวเลข",
-                //     "phone.digits" => "กรุณากรอกช่องนี้ 10 หลัก",
-                //     "phone.unique" => "มีผู้ใช้แล้ว",
+                [
+                    "phone.required" => "กรุณากรอกช่องนี้",
+                    "phone.numeric" => "กรุณากรอกช่องนี้เป็นตัวเลข",
+                    "phone.digits" => "กรุณากรอกช่องนี้ 10 หลัก",
+                    "phone.unique" => "มีผู้ใช้แล้ว",
 
-                // ]
+                ]
             );
-            $user = Product::updateOrCreate(['id' => $request->post_id], [
+            $user = User::updateOrCreate(['id' => $request->post_id], [
+                "username" => $request->username,
                 "name" => $request->name,
-                "type_name" => $request->type,
-                "status" => $request->status,
-                "days" => $request->days,
-                "price" => $request->price,
+                "password" => $request->password != null ? bcrypt($request->password) : $data->password,
             ]);
         } else {
             //เพิ่มข้อมูลใหม่
             $request->validate(
                 [
                     "name" => "required|max:12|unique:products",
-                    "type" => "required",
+                    "type_name" => "required",
                     "status" => "required",
                     "days" => "required|numeric",
                     "price" => "required|numeric",
@@ -136,24 +118,12 @@ class ManageProductController extends Controller
             );
             $user = Product::updateOrCreate(['id' => $request->post_id], [
                 "name" => $request->name,
-                "type_name" => $request->type,
+                "type_name" => $request->type_name,
                 "status" => $request->status,
                 "days" => $request->days,
                 "price" => $request->price,
             ]);
         }
         return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
-    }
-
-    public function get_post_product($id)
-    {
-        $data = Product::find($id);
-        return response()->json($data);
-    }
-
-    public function delete_post($id)
-    {
-        $data = Product::find($id)->delete();
-        return response()->json(['message' => "ลบข้อมูลเรียบร้อย", "code" => "200"]);
     }
 }
