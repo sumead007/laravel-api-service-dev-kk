@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +18,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::post('login', function () {
+    $credentials = request()->only(['username', 'password']);
+    $item_id = request()->only(['item_id']);
+    if (!auth()->guard('customer')->validate($credentials)) {
+        abort(401);
+    } else {
+        $user = Customer::where('username', $credentials['username'])->first();
+        @$user->tokens()->delete();
+        $token = $user->createToken($credentials['username'], [$item_id['item_id']]);
+        return response()->json(['token' => $token->plainTextToken]);
+    }
+});
+
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('numbers', function () {
+        
+    });
 });

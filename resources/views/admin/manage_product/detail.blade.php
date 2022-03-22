@@ -61,6 +61,7 @@
                 <div class="modal-body">
                     <form name="form_second" id="form_second" class="form-horizontal">
                         <input type="hidden" name="post_id" id="post_id">
+                        <input type="hidden" name="pro_id" id="pro_id" value="{{ $data->id }}">
                         <div class="form-group">
                             <label for="detail">รายละเอียด</label>
                             <div class="col-sm-12">
@@ -95,7 +96,7 @@
         function editPost(pass_id) {
             clear_ms_error()
             var id = pass_id;
-            let _url = "/admin/manage/admin/get_post/" + id;
+            let _url = "/admin/manage/product/detail/get_post/" + id;
             $("#text_addcus").html("แก้ไขรายเบอร์โทร");
             $("#form_second")[0].reset();
             $.ajax({
@@ -108,8 +109,8 @@
                     // console.log(res);
                     if (res) {
                         $("#post_id").val(res.id);
-                        $("#name").val(res.name);
-                        $("#username").val(res.username);
+                        $("#detail").val(res.detail);
+                        $("#status").val(res.status);
                         $('#post-modal').modal('show');
                     }
                 }
@@ -129,7 +130,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     var id = pass_id;
-                    let _url = "/admin/manage/admin/delete_post/" + id;
+                    let _url = "/admin/manage/product/detail/delete_post/" + id;
                     let _token = $('meta[name="csrf-token"]').attr('content');
 
                     $.ajax({
@@ -183,7 +184,7 @@
                     var form = $('#form_second')[0];
                     var data = new FormData(form);
                     var id = $("#post_id").val();
-                    let _url = "{{ route('admin.manage.admin.store') }}";
+                    let _url = "{{ route('admin.manage.product.detail.store') }}";
                     $.ajax({
                         url: _url,
                         type: "POST",
@@ -218,10 +219,8 @@
                                 'error'
                             )
                             clear_ms_error();
-                            $('#nameError').text(err.responseJSON.errors.name);
-                            $('#usernameError').text(err.responseJSON.errors.username);
-                            $('.passwordError').text(err.responseJSON.errors.password);
-
+                            $('#detailError').text(err.responseJSON.errors.detail);
+                            $('#statusError').text(err.responseJSON.errors.status);
                         }
                     });
                 }
@@ -229,9 +228,8 @@
         }
 
         function clear_ms_error() {
-            $('#nameError').text("");
-            $('#usernameError').text("");
-            $('#passwordError').text("");
+            $('#detailError').text("");
+            $('#statusError').text("");
         }
     </script>
 

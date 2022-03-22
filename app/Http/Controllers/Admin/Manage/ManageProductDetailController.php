@@ -70,35 +70,33 @@ class ManageProductDetailController extends Controller
     {
 
         if ($request->post_id != "") {
-            $data = User::find($request->post_id);
+            // $data = ProductDetail::find($request->post_id);
             $request->validate(
                 [
-                    "username" => $data->username != $request->username ? "required|min:6|max:12|unique:customers|unique:users" : "required|min:6|max:12|unique:customers",
-                    "name" => "required|min:3|max:20",
-                    "password" => $request->password != null ? "required|min:8|max:20|required_with:password_confirmation|same:password_confirmation" : "",
+                    "detail" => "required|max:255",
+                    "pro_id" => "required",
+                    "status" => "required",
                 ],
-                [
-                    "phone.required" => "กรุณากรอกช่องนี้",
-                    "phone.numeric" => "กรุณากรอกช่องนี้เป็นตัวเลข",
-                    "phone.digits" => "กรุณากรอกช่องนี้ 10 หลัก",
-                    "phone.unique" => "มีผู้ใช้แล้ว",
+                // [
+                //     "phone.required" => "กรุณากรอกช่องนี้",
+                //     "phone.numeric" => "กรุณากรอกช่องนี้เป็นตัวเลข",
+                //     "phone.digits" => "กรุณากรอกช่องนี้ 10 หลัก",
+                //     "phone.unique" => "มีผู้ใช้แล้ว",
 
-                ]
+                // ]
             );
-            $user = User::updateOrCreate(['id' => $request->post_id], [
-                "username" => $request->username,
-                "name" => $request->name,
-                "password" => $request->password != null ? bcrypt($request->password) : $data->password,
+            $user = ProductDetail::updateOrCreate(['id' => $request->post_id], [
+                "detail" => $request->detail,
+                "pro_id" => $request->pro_id,
+                "status" => $request->status,
             ]);
         } else {
             //เพิ่มข้อมูลใหม่
             $request->validate(
                 [
-                    "name" => "required|max:12|unique:products",
-                    "type_name" => "required",
+                    "detail" => "required|max:255",
+                    "pro_id" => "required",
                     "status" => "required",
-                    "days" => "required|numeric",
-                    "price" => "required|numeric",
                 ],
                 // [
                 //     //username
@@ -118,14 +116,24 @@ class ManageProductDetailController extends Controller
 
                 // ]
             );
-            $user = Product::updateOrCreate(['id' => $request->post_id], [
-                "name" => $request->name,
-                "type_name" => $request->type_name,
+            $user = ProductDetail::updateOrCreate(['id' => $request->post_id], [
+                "detail" => $request->detail,
+                "pro_id" => $request->pro_id,
                 "status" => $request->status,
-                "days" => $request->days,
-                "price" => $request->price,
             ]);
         }
         return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
+    }
+
+    public function get_post($id)
+    {
+        $data = ProductDetail::find($id);
+        return response()->json($data);
+    }
+
+    public function delete_post($id)
+    {
+        $data = ProductDetail::find($id)->delete();
+        return response()->json(['message' => "ลบข้อมูลเรียบร้อย", "code" => "200"]);
     }
 }

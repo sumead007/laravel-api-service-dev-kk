@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Manage\ManageAdminController;
 use App\Http\Controllers\Admin\Manage\ManageCustomerController;
 use App\Http\Controllers\Admin\Manage\ManageProductController;
 use App\Http\Controllers\Admin\Manage\ManageProductDetailController;
+use App\Http\Controllers\Customer\Product\ProductController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,13 @@ Route::get('/register', function () {
 
 Route::middleware(['auth:customer,admin'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/item/list/{id}', [App\Http\Controllers\HomeController::class, 'get_item'])->name('customer.item.list');
+
+    ///product
+    Route::get('/customer/product/home/{id}', [ProductController::class, 'index']);
+
+    // Route::middleware(['check_status_product'])->group(function () {
+    // });
 });
 
 Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
@@ -80,7 +88,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     //product_detail
     Route::get('/manage/product/detail/home/{id}', [ManageProductDetailController::class, 'index']);
     Route::get('/manage/product/detail/list/{id}', [ManageProductDetailController::class, 'get_detail'])->name('admin.manage.product.detail.list');
-    // Route::get('/manage/product/detail/post', [ManageProductDetailController::class, 'store'])->name('admin.manage.product.detail.store');
+    Route::post('/manage/product/detail/store', [ManageProductDetailController::class, 'store'])->name('admin.manage.product.detail.store');
+    Route::get('/manage/product/detail/get_post/{id}', [ManageProductDetailController::class, 'get_post']);
+    Route::delete('/manage/product/detail/delete_post/{id}', [ManageProductDetailController::class, 'delete_post']);
 
     //manage_customers
     Route::get('/manage/customer/home', [ManageCustomerController::class, 'index'])->name('admin.manage.customer.home');

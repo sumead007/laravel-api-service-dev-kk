@@ -85,7 +85,8 @@ class ManageProductController extends Controller
             $data = Product::find($request->post_id);
             $request->validate(
                 [
-                    "name" => $data->username != $request->username ? "required|max:12|unique:products" : "required|max:12",
+                    // "name" => $data->username != $request->username ? "required|max:12|unique:products" : "required|max:12",
+                    "name" => "required|max:12",
                     "type" => "required",
                     "status" => "required",
                     "days" => "required|numeric",
@@ -110,7 +111,7 @@ class ManageProductController extends Controller
             //เพิ่มข้อมูลใหม่
             $request->validate(
                 [
-                    "name" => "required|max:12|unique:products",
+                    "name" => "required|max:12",
                     "type" => "required",
                     "status" => "required",
                     "days" => "required|numeric",
@@ -153,6 +154,7 @@ class ManageProductController extends Controller
 
     public function delete_post($id)
     {
+        if (count(ProductDetail::where('pro_id', $id)->get()) > 0) return response()->json(['message' => "ไม่สามารถลบข้อมูลได้เนื่องจากมีความสำพันธ์กับตารางอื่น", "code" => "200"], 422);
         $data = Product::find($id)->delete();
         return response()->json(['message' => "ลบข้อมูลเรียบร้อย", "code" => "200"]);
     }
