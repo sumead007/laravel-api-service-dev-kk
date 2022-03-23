@@ -28,15 +28,15 @@ Route::post('login', function () {
     } else {
         $user = Customer::where('username', $credentials['username'])->first();
         @$user->tokens()->delete();
-        $token = $user->createToken($credentials['username'], [$item_id['item_id']]);
+        $token = $user->createToken($credentials['username'], ['read:limited'], now()->addMonths(1));
         return response()->json(['token' => $token->plainTextToken]);
     }
 });
 
 
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'chk_expire_token'])->group(function () {
     Route::get('numbers', function () {
-        
+        return response()->json([1, 2, 3, 4, 5]);
     });
 });

@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\NewAccessToken;
 
 class Customer extends Model implements Authenticatable
 {
@@ -52,7 +54,20 @@ class Customer extends Model implements Authenticatable
         return $this->hasMany(Buy::class, 'cus_id', 'id');
     }
 
-    public function items(){
-        return $this->hasMany(Item::class,'cus_id', 'id');
+    public function items()
+    {
+        return $this->hasMany(Item::class, 'cus_id', 'id');
+    }
+
+    public function createToken(string $name, array $abilities = ['*'], string  $expired_at)
+    {
+        $token = $this->tokens()->create([
+            'name' => $name,
+            'token' => hash('sha256', $plainTextToken = Str::random(40)),
+            'abilities' => $abilities,
+            'expired_at' => $expired_at
+        ]);
+
+        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
     }
 }
