@@ -27,15 +27,16 @@ Route::post('login', function () {
         abort(401);
     } else {
         $user = Customer::where('username', $credentials['username'])->first();
-        @$user->tokens()->delete();
-        $token = $user->createToken($credentials['username'], ['read:limited'], now()->addMonths(1));
+        // @$user->tokens()->delete();
+        $token = $user->createToken($credentials['username'], ['scb'], now()->addMinutes(1));
+        // $token = $user->createToken($credentials['username'], ['scb'], now()->addMonths(1));
         return response()->json(['token' => $token->plainTextToken]);
     }
 });
 
 
 
-Route::middleware(['auth:sanctum', 'chk_expire_token'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('numbers', function () {
         return response()->json([1, 2, 3, 4, 5]);
     });

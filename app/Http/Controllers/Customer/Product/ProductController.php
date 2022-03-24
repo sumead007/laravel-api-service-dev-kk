@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer\Product;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Item;
 
 class ProductController extends Controller
 {
@@ -28,5 +29,11 @@ class ProductController extends Controller
         $datas = Product::where('name', $request->id)->get();
         // dd($datas);
         return view('customer.product.home', compact('datas'));
+    }
+
+    public function get_token(Request $request)
+    {
+        $data = Item::find($request->id);
+        return response()->json($data->token);
     }
 }

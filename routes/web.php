@@ -66,6 +66,7 @@ Route::middleware(['auth:customer,admin'])->group(function () {
 
     ///product
     Route::get('/customer/product/home/{id}', [ProductController::class, 'index']);
+    // Route::post('/customer/get_token/', [ProductController::class, 'get_token'])->name('customer.get_token');
 
     // Route::middleware(['check_status_product'])->group(function () {
     // });

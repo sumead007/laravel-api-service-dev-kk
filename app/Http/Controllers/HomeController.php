@@ -61,12 +61,38 @@ class HomeController extends Controller
                     $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="editPost(' . $row->id . ')">แก้ไข</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm" onclick="deletePost(' . $row->id . ')">ลบ</a>';
                     return $actionBtn;
                 })
-
                 ->editColumn('created_at', function ($row) {
                     $data = Carbon::parse($row->created_at)->locale('th')->diffForHumans();;
                     return $data;
                 })
-                ->rawColumns([ 'action', 'created_at'])
+                ->editColumn('type_new', function ($row) {
+                    if ($row->type_name == 0) {
+                        return "ถอน";
+                    }
+                    if ($row->type_name == 1) {
+                        return "ฝาก";
+                    }
+                    if ($row->type_name == 2) {
+                        return "ถอน/ฝาก";
+                    }
+                })
+                ->editColumn('status_new', function ($row) {
+                    if ($row->status == 0) {
+                        return "<b class='text-danger'>ปิดให้ใช้งาน</b>";
+                    }
+                    if ($row->status == 1) {
+                        return "<b class='text-success'>ปกติ</b>";
+                    }
+                })
+                ->addColumn('token_new', function ($row) {
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm" onclick="detail(' . $row->id . ')">ดูโทเค็น</a> 
+                    <div id="div_' . $row->id . '" style="display: none">
+                        ' . $row->token . '
+                    </div>
+                    ';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action', 'created_at', 'status_new', 'token_new'])
                 ->addIndexColumn()
                 ->make(true);
         }

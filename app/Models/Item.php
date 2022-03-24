@@ -32,7 +32,7 @@ class Item extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'token',
+        // 'token',
     ];
 
     public function customers()
