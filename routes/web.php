@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\History\HistoryController;
 use App\Http\Controllers\Admin\Manage\ManageAdminController;
 use App\Http\Controllers\Admin\Manage\ManageCustomerController;
 use App\Http\Controllers\Admin\Manage\ManageProductController;
 use App\Http\Controllers\Admin\Manage\ManageProductDetailController;
+use App\Http\Controllers\Admin\Manage\ManageTokenController;
 use App\Http\Controllers\Customer\Product\ProductController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -63,13 +65,12 @@ Route::get('/register', function () {
 Route::middleware(['auth:customer,admin'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/item/list/{id}', [App\Http\Controllers\HomeController::class, 'get_item'])->name('customer.item.list');
+});
 
+Route::middleware(['auth:customer'])->group(function () {
     ///product
     Route::get('/customer/product/home/{id}', [ProductController::class, 'index']);
     // Route::post('/customer/get_token/', [ProductController::class, 'get_token'])->name('customer.get_token');
-
-    // Route::middleware(['check_status_product'])->group(function () {
-    // });
 });
 
 Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
@@ -101,4 +102,14 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/manage/customer/get_post/{id}', [ManageCustomerController::class, 'get_post']);
     Route::get('/manage/customer/get_code/{id}', [ManageCustomerController::class, 'get_code']);
     Route::delete('/manage/admin/delete_post/{id}', [ManageCustomerController::class, 'delete_post']);
+
+    //manage_token
+    Route::get('/manage/token/home', [ManageTokenController::class, 'index'])->name('admin.manage.token.home');
+    Route::get('/manage/token/list', [ManageTokenController::class, 'get_list'])->name('admin.manage.token.list');
+    Route::delete('/manage/token/delete_post/{id}', [ManageTokenController::class, 'delete_post']);
+    Route::get('/manage/token/search/{id}', [ManageTokenController::class, 'search']);
+
+    //history
+    Route::get('/manage/history/home', [HistoryController::class, 'index'])->name('admin.history.home');
+    Route::get('/manage/history/list', [HistoryController::class, 'get_list'])->name('admin.history.list');
 });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CustomerController;
 use App\Models\Customer;
 use App\Models\Item;
 use Illuminate\Http\Request;
@@ -40,4 +41,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('numbers', function () {
         return response()->json([1, 2, 3, 4, 5]);
     });
+    Route::resource('customer', CustomerController::class);
 });

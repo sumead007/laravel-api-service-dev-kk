@@ -21,7 +21,7 @@
                                     <th>วันหมดอายุ</th>
                                     <th>หมายเหตุ</th>
                                     <th>Token</th>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -110,12 +110,12 @@
                         data: 'token_new',
                         name: 'token_new'
                     },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        // orderable: true,
-                        searchable: true
-                    },
+                    // {
+                    //     data: 'action',
+                    //     name: 'action',
+                    //     // orderable: true,
+                    //     searchable: true
+                    // },
                 ]
             });
         })

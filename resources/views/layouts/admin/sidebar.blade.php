@@ -85,6 +85,15 @@
                       </a>
                   </li>
                   <li class="nav-item">
+                    <a href="{{ route('admin.manage.token.home') }}" class="nav-link">
+                        <i class="nav-icon far fa-image"></i>
+                        <p>
+                            จัดการ Token
+                            {{-- จัดการข้อมูลแอตมิน --}}
+                        </p>
+                    </a>
+                </li>
+                  {{-- <li class="nav-item">
                       <a href="#" class="nav-link">
                           <i class="nav-icon far fa-envelope"></i>
                           <p>
@@ -335,18 +344,18 @@
                               </a>
                           </li>
                       </ul>
-                  </li>
-                  <li class="nav-header">MISCELLANEOUS</li>
-                  <li class="nav-item">
-                      <a href="iframe.html" class="nav-link">
+                  </li> --}}
+                  <li class="nav-header">ประวัติ</li>
+                  {{-- <li class="nav-item">
+                      <a href="" class="nav-link">
                           <i class="nav-icon fas fa-ellipsis-h"></i>
-                          <p>Tabbed IFrame Plugin</p>
+                          <p>จัดการโอนเงินลูกค้าด้วยมือ</p>
                       </a>
-                  </li>
+                  </li> --}}
                   <li class="nav-item">
-                      <a href="https://adminlte.io/docs/3.1/" class="nav-link">
+                      <a href="{{ route('admin.history.home') }}" class="nav-link">
                           <i class="nav-icon fas fa-file"></i>
-                          <p>Documentation</p>
+                          <p>ประวัติการโอนเงินของลูกค้า</p>
                       </a>
                   </li>
                   <li class="nav-header">MULTI LEVEL EXAMPLE</li>
