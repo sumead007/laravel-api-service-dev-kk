@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DataTables;
 use App\Models\PersonalAccessToken;
+use App\Models\Product;
 
 class ManageTokenController extends Controller
 {
@@ -23,7 +24,8 @@ class ManageTokenController extends Controller
 
     public function index()
     {
-        return view('admin.token.home');
+        $products = Product::all();
+        return view('admin.token.home', compact('products'));
     }
 
     public function get_list(Request $request)
@@ -100,5 +102,62 @@ class ManageTokenController extends Controller
     {
         $data = Customer::where('username', "like", $username . "%")->get();
         return response()->json($data);
+    }
+
+    public function store(Request $request)
+    {
+
+        if ($request->post_id != "") {
+            // $data = ProductDetail::find($request->post_id);
+            $request->validate(
+                [
+                    "detail" => "required|max:255",
+                    "pro_id" => "required",
+                    "status" => "required",
+                ],
+                // [
+                //     "phone.required" => "กรุณากรอกช่องนี้",
+                //     "phone.numeric" => "กรุณากรอกช่องนี้เป็นตัวเลข",
+                //     "phone.digits" => "กรุณากรอกช่องนี้ 10 หลัก",
+                //     "phone.unique" => "มีผู้ใช้แล้ว",
+
+                // ]
+            );
+            $user = ProductDetail::updateOrCreate(['id' => $request->post_id], [
+                "detail" => $request->detail,
+                "pro_id" => $request->pro_id,
+                "status" => $request->status,
+            ]);
+        } else {
+            //เพิ่มข้อมูลใหม่
+            $request->validate(
+                [
+                    "id" => "required",
+                    "expire" => "required",
+                    "product" => "required",
+
+                ],
+                // [
+                //     //username
+                //     "username.required" => "กรุณากรอกช่องนี้",
+                //     "username.min" => "ต้องมีอย่างน้อย6ตัวอักษร",
+                //     "username.max" => "ต้องมีไม่เกิน12ตัวอักษร",
+                //     "username.unique" => "ชื่อผู้ใช้นี้ถูกใช้แล้ว",
+                //     //name
+                //     "name.required" => "กรุณากรอกช่องนี้",
+                //     "name.min" => "ต้องมีอย่างน้อย3ตัวอักษร",
+                //     "name.max" => "ต้องมีไม่เกิน20ตัวอักษร",
+                //     //password
+                //     "password.required" => "กรุณากรอกช่องนี้",
+                //     "password.min" => "ต้องมีอย่างน้อย8ตัวอักษร",
+                //     "password.max" => "ต้องมีไม่เกิน20ตัวอักษร",
+                //     "password.same" => "กรุณายืนยันรหัสผ่านใหม่อีกครั้ง",
+
+                // ]
+            );
+            $user = Customer::find($request->id);
+            $token = $user->createToken($user->username, [$request->product], Carbon::parse($request->expire));
+        }
+        return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
     }
 }

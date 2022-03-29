@@ -91,12 +91,35 @@
                             <tbody>
                             </tbody>
                         </table>
+                        <span id="idError" class="alert-message text-danger"></span>
 
+                        <div class="form-group">
+                            <label for="product">Product</label>
+                            <div class="col-sm-12">
+                                <select name="product" id="product" class="form-control">
+                                    <option value="" disabled selected>กรุณาเลือก Product</option>
+                                    @foreach ($products as $product)
+                                        <option value="{{ $product->name }}:{{ $product->id }}">
+                                            {{ $product->name }}:
+                                            @if ($product->type_name == 0)
+                                                ถอน
+                                            @elseif($product->type_name == 1)
+                                                ฝาก
+                                            @elseif($product->type_name == 2)
+                                                ถอน/ฝาก
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span id="productError" class="alert-message text-danger"></span>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="status">วันหมดอายุ</label>
                             <div class="col-sm-12">
                                 <input type="date" name="expire" id="expire" class="form-control" min='1899-01-01'
                                     max='2000-13-13'>
+                                <span id="expireError" class="alert-message text-danger"></span>
                             </div>
                         </div>
                     </form>
@@ -154,12 +177,6 @@
                     }
                 }
             });
-        }
-
-
-        function see_all_detail() {
-            let id = $("#tb_id").val();
-            window.location = "/admin/manage/product/detail/home/" + id
         }
 
         function editPost(pass_id) {
@@ -256,7 +273,7 @@
                     var form = $('#form_second')[0];
                     var data = new FormData(form);
                     var id = $("#post_id").val();
-                    let _url = "{{ route('admin.manage.product.store') }}";
+                    let _url = "{{ route('admin.manage.token.store') }}";
                     $.ajax({
                         url: _url,
                         type: "POST",
@@ -291,12 +308,9 @@
                                 'error'
                             )
                             clear_ms_error();
-                            $('#nameError').text(err.responseJSON.errors.name);
-                            $('#typeError').text(err.responseJSON.errors.type);
-                            $('#daysError').text(err.responseJSON.errors.days);
-                            $('#priceError').text(err.responseJSON.errors.price);
-                            $('#statusError').text(err.responseJSON.errors.status);
-
+                            $('#idError').text(err.responseJSON.errors.id);
+                            $('#expireError').text(err.responseJSON.errors.expire);
+                            $('#productError').text(err.responseJSON.errors.product);
                         }
                     });
                 }
@@ -304,11 +318,9 @@
         }
 
         function clear_ms_error() {
-            $('#nameError').text("");
-            $('#typeError').text("");
-            $('#daysError').text("");
-            $('#priceError').text("");
-            $('#statusError').text("");
+            $('#idError').text("");
+            $('#expireError').text("");
+            $('#productError').text("");
         }
     </script>
 

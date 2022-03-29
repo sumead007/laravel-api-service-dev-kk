@@ -108,6 +108,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/manage/token/list', [ManageTokenController::class, 'get_list'])->name('admin.manage.token.list');
     Route::delete('/manage/token/delete_post/{id}', [ManageTokenController::class, 'delete_post']);
     Route::get('/manage/token/search/{id}', [ManageTokenController::class, 'search']);
+    Route::post('/manage/token/store', [ManageTokenController::class, 'store'])->name('admin.manage.token.store');
 
     //history
     Route::get('/manage/history/home', [HistoryController::class, 'index'])->name('admin.history.home');
