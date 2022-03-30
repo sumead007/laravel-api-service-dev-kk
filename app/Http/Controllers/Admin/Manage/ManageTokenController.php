@@ -158,6 +158,6 @@ class ManageTokenController extends Controller
             $user = Customer::find($request->id);
             $token = $user->createToken($user->username, [$request->product], Carbon::parse($request->expire));
         }
-        return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
+        return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ', 'token' => $token->plainTextToken], 200);
     }
 }

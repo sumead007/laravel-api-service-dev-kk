@@ -287,10 +287,14 @@
                         timeout: 600000,
                         data: data,
                         success: function(res) {
+                            let message = res.message + '<br>' + '<b>' + 'Token: ' + (res.token).split(
+                                    "|")[1] + '</b>' + '<br>' +
+                                '<b class="text-danger">คำเตือน!! สามารถดูโทเค็นได้แค่ครั้งเดียว กรุณาเก็บไว้ให้ดี</b>'
+
                             Swal.fire(
                                 'สำเร็จ!',
-                                res.message,
-                                'success'
+                                message,
+                                'success',
                             )
                             var t = $('.yajra-datatable').DataTable();
                             t.draw();
