@@ -113,4 +113,5 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     //history
     Route::get('/manage/history/home', [HistoryController::class, 'index'])->name('admin.history.home');
     Route::get('/manage/history/list', [HistoryController::class, 'get_list'])->name('admin.history.list');
+    Route::get('/manage/history/accepte/{id}/{status}', [HistoryController::class, 'accepte']);
 });

@@ -22,6 +22,14 @@ class Buy extends Model
         'status',
         'comment',
         'expire',
+        'from_account',
+        'from_no_account',
+        'from_name_account',
+        'to_account',
+        'to_no_account',
+        'to_name_account',
+        'datetime_transection',
+        'price',
     ];
 
     public function customers()

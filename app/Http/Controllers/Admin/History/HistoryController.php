@@ -45,8 +45,9 @@ class HistoryController extends Controller
 
             return Datatables::of($data)
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-warning btn-sm" onclick="editPost(' . $row->id . ')">แก้ไข</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm" onclick="deletePost(' . $row->id . ')">ลบ</a>';
-                    return $actionBtn;
+                    if ($row->status == 0) {
+                        return '<a href="javascript:void(0)" class="edit btn btn-success btn-sm" onclick="accepte(' . $row->id . ',1)">ยินยันการชำระเงิน</a> <a href="javascript:void(0)" class="edit btn btn-danger btn-sm" onclick="accepte(' . $row->id . ',2)">ยกเลิก</a>';
+                    }
                 })
                 ->addColumn('cus_username', function ($row) {
                     $data = $row->customers->username;
@@ -65,13 +66,13 @@ class HistoryController extends Controller
                 })
                 ->addColumn('status_new', function ($row) {
                     if ($row->status == 0) {
-                        return "<b class='text-danger'>รอการยืนยัน</b>";
+                        return "<b class='text-gray'>รอการยืนยัน</b>";
                     }
                     if ($row->status == 1) {
                         return "<b class='text-success'>สำเร็จ</b>";
                     }
                     if ($row->status == 2) {
-                        return "<b class='text-success'>ยกเลิก</b>";
+                        return "<b class='text-danger'>ยกเลิก</b>";
                     }
                 })
                 ->editColumn('created_at', function ($row) {
@@ -82,5 +83,13 @@ class HistoryController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
+    }
+
+    public function accepte($id, $status)
+    {
+        $user = Buy::updateOrCreate(['id' => $id], [
+            "status" => $status,
+        ]);
+        return response()->json(['message' => "ลบข้อมูลเรียบร้อย", "code" => "200"]);
     }
 }

@@ -31,25 +31,35 @@
                     </a>
                 </div> --}}
                 <br>
-                <table class="table table-bordered yajra-datatable">
-                    <thead>
-                        <tr>
-                            {{-- <th>No</th> --}}
-                            <th>Username</th>
-                            <th>ชื่อ Product</th>
-                            <th>ประเภทการใช้งาน</th>
-                            <th>จำนวนการเช่า(วัน)</th>
-                            <th>ราคา(บาท)</th>
-                            <th>สถานะ</th>
-                            <th>หมายเหตุ</th>
-                            <th>วันหมดอายุ</th>
-                            <th>วันที่ทำรายการ</th>
-                            {{-- <th>อื่นๆ</th> --}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered yajra-datatable">
+                        <thead>
+                            <tr>
+                                {{-- <th>No</th> --}}
+                                <th>Username</th>
+                                <th>ชื่อ Product</th>
+                                <th>ประเภทการใช้งาน</th>
+                                <th>จำนวนการเช่า(วัน)</th>
+                                <th>ราคา(บาท)</th>
+                                <th>สถานะ</th>
+                                <th>หมายเหตุ</th>
+                                <th>วันหมดอายุ</th>
+                                <th>โอนจากบัญชี</th>
+                                <th>เลขที่บัญชี</th>
+                                <th>ชื่อคนโอน</th>
+                                <th>โอนไปยังบัญชี</th>
+                                <th>โอนไปยังเลขที่บัญชี</th>
+                                <th>ชื่อคนรับ</th>
+                                <th>จำนวนเงินที่โอน</th>
+                                <th>วันเวลาทำรายการ</th>
+                                <th>วันที่ทำรายการ</th>
+                                <th>อื่นๆ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->
@@ -152,72 +162,10 @@
         </div>
     </div>
 
-    {{-- <script>
-        function detail(pass_id) {
-            var id = pass_id;
-            let _url = "/admin/manage/admin/delete_post/" + id;
-            $.ajax({
-                url: _url,
-                type: "get",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(res) {
-                    console.log(res);
-                    if (res) {
-                        $("#records_table tbody").empty();
-                        $.each(res, function(i, item) {
-                            var $tr = $('<tr>').append(
-                                $('<td>').text(item.detail),
-                                $('<td>').html(item.status == 0 ?
-                                    "<b class='text-danger'>ไม่รองรับ</b>" :
-                                    "<b class='text-success'>รองรับ</b>"),
-                                $('<td>').text(item.created_at2)
-                            ).appendTo('#records_table');
-                            // console.log($tr.wrap('<p>').html());
-                        });
-                        $("#tb_id").val(id)
-                        $('#table-modal').modal('show');
-                    }
-                }
-            });
-        }
-
-        function see_all_detail() {
-            let id = $("#tb_id").val();
-            window.location = "/admin/manage/product/detail/home/" + id
-        }
-
-        function editPost(pass_id) {
-            clear_ms_error()
-            var id = pass_id;
-            let _url = "/admin/manage/product/get_post/" + id;
-            $("#text_addcus").html("แก้ไข Product");
-            $("#form_second")[0].reset();
-            $.ajax({
-                url: _url,
-                type: "get",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(res) {
-                    console.log(res);
-                    if (res) {
-                        $("#post_id").val(res.id);
-                        $("#name").val(res.name);
-                        $("#type").val(res.type_name);
-                        $("#days").val(res.days);
-                        $("#price").val(res.price);
-                        $("#status").val(res.status);
-                        $('#post-modal').modal('show');
-                    }
-                }
-            });
-        }
-
-        function deletePost(pass_id) {
+    <script>
+        function accepte(pass_id, status) {
             Swal.fire({
-                title: 'คูณแน่ใจใช่หรือไม่?',
+                title: 'คุณต้องการทำรายการนี้ใช่หรือไม่?',
                 text: "คุณต้องการลบข้อมูลใช่หรือไม่?",
                 icon: 'warning',
                 showCancelButton: true,
@@ -228,12 +176,12 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     var id = pass_id;
-                    let _url = "/admin/manage/product/delete_post/" + id;
+                    let _url = "/admin/manage/history/accepte/" + id + "/" + status;
                     let _token = $('meta[name="csrf-token"]').attr('content');
 
                     $.ajax({
                         url: _url,
-                        type: "DELETE",
+                        type: "get",
                         data: {
                             _token: _token,
                         },
@@ -260,83 +208,7 @@
             })
 
         }
-
-        function addPost() {
-            $('#post-modal').modal('show');
-            $("#form_second")[0].reset();
-            $("#post_id").val("")
-        }
-
-        function createPost() {
-            Swal.fire({
-                title: 'คุณแน่ใจใช่หรือไม่?',
-                text: "คุณต้องการบันทีกใช่หรือไม่?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'ตกลง',
-                cancelButtonText: "ยกเลิก"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var form = $('#form_second')[0];
-                    var data = new FormData(form);
-                    var id = $("#post_id").val();
-                    let _url = "{{ route('admin.manage.product.store') }}";
-                    $.ajax({
-                        url: _url,
-                        type: "POST",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        enctype: 'multipart/form-data',
-                        processData: false, // Important!
-                        contentType: false,
-                        cache: false,
-                        timeout: 600000,
-                        data: data,
-                        success: function(res) {
-                            Swal.fire(
-                                'สำเร็จ!',
-                                res.message,
-                                'success'
-                            )
-                            var t = $('.yajra-datatable').DataTable();
-                            t.draw();
-                            $('#post-modal').modal('hide');
-
-                            // console.log(res);
-                        },
-                        error: function(err) {
-                            let msg = JSON.parse(err.responseText)
-                            // console.log(msg);
-
-                            Swal.fire(
-                                'มีข้อผิดพลาด!',
-                                'กรุณาตรวจสอบข้อมูลก่อนส่ง!',
-                                'error'
-                            )
-                            clear_ms_error();
-                            $('#nameError').text(err.responseJSON.errors.name);
-                            $('#typeError').text(err.responseJSON.errors.type);
-                            $('#daysError').text(err.responseJSON.errors.days);
-                            $('#priceError').text(err.responseJSON.errors.price);
-                            $('#statusError').text(err.responseJSON.errors.status);
-
-                        }
-                    });
-                }
-            })
-        }
-
-        function clear_ms_error() {
-            $('#nameError').text("");
-            $('#typeError').text("");
-            $('#daysError').text("");
-            $('#priceError').text("");
-            $('#statusError').text("");
-        }
-    </script> --}}
+    </script>
 
     <script type="text/javascript">
         window.onload = (event) => {
@@ -384,16 +256,48 @@
                             name: 'expire'
                         },
                         {
+                            data: 'from_account',
+                            name: 'from_account'
+                        },
+                        {
+                            data: 'from_no_account',
+                            name: 'from_no_account'
+                        },
+                        {
+                            data: 'from_name_account',
+                            name: 'from_name_account'
+                        },
+                        {
+                            data: 'to_account',
+                            name: 'to_account'
+                        },
+                        {
+                            data: 'to_no_account',
+                            name: 'to_no_account'
+                        },
+                        {
+                            data: 'to_name_account',
+                            name: 'to_name_account'
+                        },
+                        {
+                            data: 'price',
+                            name: 'price'
+                        },
+                        {
+                            data: 'datetime_transection',
+                            name: 'datetime_transection'
+                        },
+                        {
                             data: 'created_at',
                             name: 'created_at',
                             orderable: true,
                         },
-                        // {
-                        //     data: 'action',
-                        //     name: 'action',
-                        //     // orderable: true,
-                        //     searchable: true
-                        // },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            // orderable: true,
+                            searchable: true
+                        },
                     ]
                 });
             });
