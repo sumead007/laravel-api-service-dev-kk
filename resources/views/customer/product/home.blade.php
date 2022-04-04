@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">Product For {{ $datas[0]->name }}</div>
+                    <div class="card-header">Product For {{ @$datas[0]->name }}</div>
 
                     <div class="card-body">
                         {{-- <h1>Product For {{ $datas[0]->name }} </h1> --}}
@@ -48,7 +48,8 @@
                                             @endforeach
                                         </ul>
                                         <div class="card-body" align="center">
-                                            <a href="#" class="card-link">เช่าเลย</a>
+                                            <a href="/customer/buy/home/{{ $value->id }}"
+                                                class="card-link">เช่าเลย</a>
                                         </div>
                                     </div>
                                 </div>
@@ -60,5 +61,4 @@
             </div>
         </div>
     </div>
-
 @endsection

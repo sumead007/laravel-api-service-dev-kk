@@ -17,7 +17,7 @@ class CheckStatusProduct
      */
     public function handle(Request $request, Closure $next)
     {
-        $data = Product::where('name', $request->id)->first();
+        $data = Product::find($request->id);
         if ($data->status == 0) {
             # code...
             return abort(403, "ปิดการใช้งานชั่วคราว");

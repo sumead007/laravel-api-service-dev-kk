@@ -26,7 +26,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $datas = Product::where('name', $request->id)->get();
+        $datas = Product::where('name', $request->id)->where('status', 1)->get();
         // dd($datas);
         return view('customer.product.home', compact('datas'));
     }
