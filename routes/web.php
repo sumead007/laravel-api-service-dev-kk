@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Manage\ManageProductController;
 use App\Http\Controllers\Admin\Manage\ManageProductDetailController;
 use App\Http\Controllers\Admin\Manage\ManageTokenController;
 use App\Http\Controllers\Customer\Buy\BuyController;
+use App\Http\Controllers\Customer\History\HistoryPaymentController;
 use App\Http\Controllers\Customer\Product\ProductController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +76,11 @@ Route::middleware(['auth:customer'])->group(function () {
     //buy
     Route::get('/customer/buy/home/{id}', [BuyController::class, 'index'])->middleware('check_status_product');
     Route::post('/customer/buy/store/{id}', [BuyController::class, 'store'])->name('customer.buy.store')->middleware('check_status_product');
+
+    //history
+    Route::get('/customer/history/payment/home', [HistoryPaymentController::class, 'index'])->name('customer.history.payment.home');
+    Route::get('/customer/history/payment/home/list', [HistoryPaymentController::class, 'get_item'])->name('customer.history.home.list');
+
     // Route::post('/customer/get_token/', [ProductController::class, 'get_token'])->name('customer.get_token');
 });
 

@@ -74,6 +74,18 @@
                                 <a class="dropdown-item" href="#">Separated link</a> --}}
                                 </div>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                                    aria-haspopup="true" aria-expanded="false">History</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item"
+                                        href="{{ route('customer.history.payment.home') }}">Payment</a>
+                                    {{-- <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a> --}}
+                                </div>
+                            </li>
                         @endif
 
                     </ul>
@@ -103,7 +115,7 @@
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                                                                     document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 

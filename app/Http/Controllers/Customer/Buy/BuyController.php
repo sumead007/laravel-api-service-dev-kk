@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Buy;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class BuyController extends Controller
 {
-    private $banks;
     /**
      * Create a new controller instance.
      *
@@ -40,13 +41,16 @@ class BuyController extends Controller
                 "to_name_account" => "นายสราวุท สวาสวัสดื์",
             ]
         ];
-        $this->banks = $banks;
-        // dd($datas);
+        // $this->banks = $banks;
+        Session::put('banks', $banks);
+        // dd(Session::get('banks'));
         return view('customer.buy.home', compact('datas', 'banks'));
     }
 
     public function store(Request $request)
     {
+        // return dd($this->banks);
+
         $request->validate(
             [
                 "name_api" => "required",
@@ -57,11 +61,14 @@ class BuyController extends Controller
                 "from_no_account" => "required",
                 "from_name_account" => "required",
                 "from_index" => "required",
-                "time_transection" => "required",
-                "date_transection" => "required",
+                "datetime_transection" => "required",
+                "price" => "required",
             ],
             []
         );
+        $banks = Session::get('banks');
+        $bank = $banks[$request->from_index];
+        // return dd($bank);
         $data = Product::find($request->id);
         $user = Buy::updateOrCreate(['id' => ""], [
             "cus_id" => auth()->guard('customer')->user()->id,
@@ -72,8 +79,17 @@ class BuyController extends Controller
             "status" => 0,
             "comment" => "-",
             "expire" => now()->addDay($data->days),
+            "from_account" => $request->from_account,
+            "from_no_account" => $request->from_no_account,
+            "from_name_account" => $request->from_name_account,
+            "to_account" => $bank['to_account'],
+            "to_no_account" => $bank['to_no_account'],
+            "to_name_account" => $bank['to_name_account'],
+            "datetime_transection" =>   Carbon::parse($request->datetime_transection),
+            "price" => $request->price,
+
         ]);
 
-        return response()->json(['code' => '200', 'message' => 'บันทึกข้อมูลสำเร็จ'], 200);
+        return redirect()->back()->with('success', "บักทึกข้อมูลสำเร็จ");
     }
 }

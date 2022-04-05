@@ -1,6 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
+    <link rel="stylesheet" media="all" type="text/css" href="{{ asset('jquerydatepicker/jquery-ui.css') }}" defer />
+    <link rel="stylesheet" media="all" type="text/css"
+        href="{{ asset('jquerydatepicker/jquery-ui-timepicker-addon.css') }}" defer />
+
+    <script type="text/javascript" src="{{ asset('jquerydatepicker/jquery-1.10.2.min.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('jquerydatepicker/jquery-ui.min.js') }}" defer></script>
+
+    <script type="text/javascript" src="{{ asset('jquerydatepicker/jquery-ui-timepicker-addon.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('jquerydatepicker/jquery-ui-sliderAccess.js') }}" defer></script>
     @php
     $type_name = '';
     @endphp
@@ -13,6 +22,18 @@
                     </div>
 
                     <div class="card-body">
+                        @if (session('success'))
+                            {{-- <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>Error!</strong>
+                        <button type="button" class="close"
+                            data-dismiss="alert">&times;</button>
+                    </div> --}}
+                            <div class="alert alert-bottom alert-success alert-dismissible fade show " role="alert">
+                                <span> {{ session('success') }}</span>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
                         <h1>
                             {{ $datas->name }}
                             @if ($datas->type_name == 0)
@@ -164,12 +185,12 @@
                                 @enderror
 
                                 <div class="form-group">
-                                    <label for="date_transection">วันที่ทำการโอนเงิน</label>
+                                    <label for="price">จำนวนเงินที่โอน</label>
                                     <div class="col-sm-12">
-                                        <input type="date" class="form-control" id="date_transection"
-                                            name="date_transection" placeholder="กรุณากรอกชื่อบัญชี" required>
+                                        <input type="number" class="form-control" id="price" name="price"
+                                            placeholder="กรุณากรอกจำนวนเงินที่โอน" required>
                                     </div>
-                                    @error('date_transection')
+                                    @error('price')
                                         <div class="my-2">
                                             <span class="text-danger">{{ $message }}</span>
                                         </div>
@@ -177,22 +198,22 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="time_transection">วันที่ทำการโอนเงิน</label>
+                                    <label for="datetime_transection">วันที่และเวลาที่ทำการโอนเงิน
+                                        (สามารถดูได้ในสลิป)</label>
                                     <div class="col-sm-12">
-                                        <input type="time" class="form-control" id="time_transection"
-                                            name="time_transection" placeholder="กรุณากรอกชื่อบัญชี" required>
+                                        <input type="text" class="form-control" id="datetime_transection"
+                                            name="datetime_transection" placeholder="กรุณากรอกวันที่และเวลาที่ทำการโอนเงิน"
+                                            required>
                                     </div>
-                                    @error('time_transection')
+                                    @error('datetime_transection')
                                         <div class="my-2">
                                             <span class="text-danger">{{ $message }}</span>
                                         </div>
                                     @enderror
                                 </div>
-
                                 <div align="right">
                                     <button type="button" class="btn btn-primary" onclick="createPost()">บันทึก</button>
                                 </div>
-
                             </form>
                         </div>
 
@@ -201,6 +222,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         function createPost() {
@@ -219,5 +241,15 @@
                 }
             })
         }
+    </script>
+    <script type="text/javascript">
+        window.onload = (event) => {
+            $(function() {
+                $("#datetime_transection").datetimepicker({
+                    dateFormat: 'dd-m-yy',
+                    timeFormat: "HH:mm"
+                });
+            });
+        };
     </script>
 @endsection
