@@ -28,7 +28,7 @@
                                         <th>โอนไปยังเลขที่บัญชี</th>
                                         <th>ชื่อคนรับ</th>
                                         <th>จำนวนเงินที่โอน</th>
-                                        <th>วันเวลาทำรายการ</th>
+                                        <th>วันเวลาโอนเงิน</th>
                                         <th>วันที่ทำรายการ</th>
                                         {{-- <th>Action</th> --}}
                                     </tr>
@@ -112,11 +112,6 @@
                         name: 'expire'
                     },
                     {
-                        data: 'created_at',
-                        name: 'created_at'
-                    },
-
-                    {
                         data: 'from_account',
                         name: 'from_account'
                     },
@@ -141,12 +136,16 @@
                         name: 'to_name_account'
                     },
                     {
+                        data: 'price',
+                        name: 'price'
+                    },
+                    {
                         data: 'datetime_transection',
                         name: 'datetime_transection'
                     },
                     {
-                        data: 'price',
-                        name: 'price'
+                        data: 'created_at',
+                        name: 'created_at'
                     },
                     // {
                     //     data: 'action',

@@ -27,7 +27,7 @@ class HistoryPaymentController extends Controller
      */
     public function index(Request $request)
     {
-        return view('customer.payment.home');
+        return view('customer.history.payment.home');
     }
     public function get_item(Request $request)
     {
@@ -56,34 +56,29 @@ class HistoryPaymentController extends Controller
                     $data = Carbon::parse($row->created_at)->locale('th')->diffForHumans();;
                     return $data;
                 })
-                ->editColumn('type_new', function ($row) {
-                    if ($row->type_name == 0) {
+                ->editColumn('type_name_api', function ($row) {
+                    if ($row->type_name_api == 0) {
                         return "ถอน";
                     }
-                    if ($row->type_name == 1) {
+                    if ($row->type_name_api == 1) {
                         return "ฝาก";
                     }
-                    if ($row->type_name == 2) {
+                    if ($row->type_name_api == 2) {
                         return "ถอน/ฝาก";
                     }
                 })
-                ->editColumn('status_new', function ($row) {
+                ->editColumn('status', function ($row) {
                     if ($row->status == 0) {
-                        return "<b class='text-danger'>ปิดให้ใช้งาน</b>";
+                        return "<b class='text-secondary'>กำลังรอดำเนินการ</b>";
                     }
                     if ($row->status == 1) {
                         return "<b class='text-success'>ปกติ</b>";
                     }
+                    if ($row->status == 2) {
+                        return "<b class='text-danger'>ถูกยกเลิก</b>";
+                    }
                 })
-                ->addColumn('token_new', function ($row) {
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm" onclick="detail(' . $row->id . ')">ดูโทเค็น</a>
-                    <div id="div_' . $row->id . '" style="display: none">
-                        ' . $row->token . '
-                    </div>
-                    ';
-                    return $actionBtn;
-                })
-                ->rawColumns(['action', 'created_at', 'status_new', 'token_new'])
+                ->rawColumns(['action', 'created_at', 'status'])
                 ->addIndexColumn()
                 ->make(true);
         }
